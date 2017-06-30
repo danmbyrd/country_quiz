@@ -1,34 +1,31 @@
 var Quiz = React.createClass({
+
    getInitialState() {
-     return { questions: [] } 
+     return { questions: [], questionAnswers: {}} 
    },
    
   componentDidMount() {
     console.log("Mounted!!")
-    this.setState({ questions: [{
-      id: 1, content: "Hello?", answers: [{ id: 2, text: "Hi", order: 1}]
-    }]})
-    //$.getJSON('/api/v1/items.json', (response) => { this.setState({ items: response }) });
+    $.getJSON('/api/v1/questions.json', (response) => { this.setState({ questions: response }) });
   },
 
-  getInitialState() { return { questions: [] } },
-
+  saveAnswer: function(answer) {
+    this.state.questionAnswers[answer.questionId] = answer.answerValue
+  },
 
   render() {
     var questions = this.state.questions.map( (q) => {
      return ( 
-        <Question question={q} />
+        <Question question={q} saveAnswer={this.saveAnswer} />
      ) });
 
     return( 
-      <form>
-        <table class="question_table">
-          {questions}
-        </table>
-        <div class="button_div">
-          <button type="button" class="answer">Submit</button>
+     <div className="centered">
+        {questions}
+        <div className="button_div">
+          <button type="button" className="answer">Submit</button>
         </div>
-      </form>
+     </div>
     )
   }
 });

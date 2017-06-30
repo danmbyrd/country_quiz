@@ -1,13 +1,17 @@
 var Question = React.createClass({
 
+  handleChange: function (changeEvent) {
+     this.props.saveAnswer({ questionId: this.props.question.id, answerValue: changeEvent.target.value })
+  },
+
   render() {
     var question = this.props.question
     console.log(this.props.question.answers)
     var answers = this.props.question.answers.map( (answer) => {
       return(
-        <td class="answer">
+        <td className="answer">
           <label>
-            <input type="radio" name={answer.id} value={answer.order} />
+            <input type="radio" name={question.id} value={answer.order} />
             {answer.text}
           </label>
         </td>
@@ -15,14 +19,14 @@ var Question = React.createClass({
     });
 
     return( 
-      <div>
-      <tr>
-        <h1 class="question">{ question.content } </h1>
-      </tr>
-      <tr class="answer_list">
-        {answers} 
-      </tr>
-      </div>
+      <table className="question_table">
+        <tr>
+          <h1 className="question">{ question.content } </h1>
+        </tr>
+        <tr className="answer_list" onChange={this.handleChange}>
+          {answers} 
+        </tr>
+      </table>
     )
   }
 });
