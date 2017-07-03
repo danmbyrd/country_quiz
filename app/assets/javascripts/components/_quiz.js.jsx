@@ -1,7 +1,7 @@
 var Quiz = React.createClass({
 
    getInitialState() {
-     return { questions: [], questionAnswers: {}} 
+     return { questions: [], questionAnswers: {}, countryMatches: []} 
    },
    
   componentDidMount() {
@@ -10,7 +10,18 @@ var Quiz = React.createClass({
   },
 
   saveAnswer: function(answer) {
-    this.state.questionAnswers[answer.questionId] = answer.answerValue
+    var newQuestionAnswers = this.state.questionAnswers
+    newQuestionAnswers[answer.questionId] = answer.answerValue
+    this.setState({ questionAnswers: newQuestionAnswers }) 
+    console.log("question answers: " + JSON.stringify(this.state.questionAnswers));
+  },
+
+  provideMatches: function() {
+   //var fetchedMatches = [ { name: "Germany",  score: 0.9 }, { name: "Croatia",  score: 0.5 } ]
+   var fetchedMatches = $.getJSON('/api/v1/country_matches.json', this.state.questionAnswers, (response) =>
+     { this.setState({ countryMatches: response }) }) 
+       
+    console.log("Country matches: " + JSON.stringify(this.state.countryMatches));
   },
 
   render() {
@@ -23,8 +34,9 @@ var Quiz = React.createClass({
      <div className="centered">
         {questions}
         <div className="button_div">
-          <button type="button" className="answer">Submit</button>
+          <button type="button" className="answer" onClick={this.provideMatches}>Submit</button>
         </div>
+        { this.state.countryMatches.length > 0 && <CountryMatches countryMatches={this.state.countryMatches} /> }
      </div>
     )
   }
